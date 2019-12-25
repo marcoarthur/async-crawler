@@ -159,6 +159,6 @@ Same as perl itself.
 =head1 SEE ALSO
 
 This was mostly stolen from:
-http://blogs.perl.org/users/stas/2013/02/web-scraping-with-modern-perl-part-2---speed-edition.html
+L<http://blogs.perl.org/users/stas/2013/02/web-scraping-with-modern-perl-part-2---speed-edition.html>
 
 =cut
