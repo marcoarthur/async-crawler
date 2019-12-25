@@ -12,6 +12,8 @@ use constant {
   DEBUG      => $ENV{ASYNC_CRAWLER_DEBUG},
 };
 
+our $VERSION = '0.01';
+
 # sites we are crawling
 has targets => sub { [] };
 
