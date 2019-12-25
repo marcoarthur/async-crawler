@@ -8,7 +8,10 @@ use EV;
 use Web::Scraper::LibXML;
 use YADA;
 use DDP;
-use constant {MAX_LEVELS => 3,};
+use constant {
+  MAX_LEVELS => 3,
+  DEBUG      => $ENV{ASYNC_CRAWLER_DEBUG},
+};
 
 # sites we are crawling
 has targets => sub { [] };
@@ -44,7 +47,7 @@ sub run($self) {
 
   $downloader->append(
     $self->targets,
-    {retry => 3, opts => {verbose => 1}},
+    {retry => 3, opts => {verbose => DEBUG}},
     sub {
       my $yada = shift;
       return
