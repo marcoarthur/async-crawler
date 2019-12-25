@@ -4,8 +4,8 @@ use warnings;
 use lib qw(./lib);
 use Async::Crawler;
 
-my $as = Async::Crawler->new(
-    targets => [ @ARGV ],
+my $ac = Async::Crawler->new(
+    targets => [ 'https://www.folha.uol.com.br/fsp' ],
     elements => [
         {
             selector => '.c-news__body > p',
@@ -20,4 +20,4 @@ my $as = Async::Crawler->new(
     ]
 );
 
-$as->run;
+$ac->run;

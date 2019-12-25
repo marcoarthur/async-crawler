@@ -28,6 +28,7 @@ has elements =>
 
 # handler to data collected
 sub data_handler ($self, $doc) {
+  # TODO: save it
   p $doc;
 }
 
@@ -60,11 +61,11 @@ sub run($self) {
         }
       };
 
-      # Get data
+      # parse response data
       my $doc
         = $scraper->scrape($yada->response->decoded_content, $yada->final_url);
 
-      # TODO: Save the data
+      # TODO: handle the data
       $self->data_handler($doc);
 
       # Enqueue links from the parsed page
@@ -83,7 +84,7 @@ sub run($self) {
 
 1;
 
-__DATA__
+__END__
 
 Stolen from:
 http://blogs.perl.org/users/stas/2013/02/web-scraping-with-modern-perl-part-2---speed-edition.html
