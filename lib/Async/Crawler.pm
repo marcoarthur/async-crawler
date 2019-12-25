@@ -1,5 +1,4 @@
 package Async::Crawler;
-
 use 5.016;
 use Mojo::Base -base, -signatures;
 use common::sense;
@@ -85,9 +84,81 @@ sub run($self) {
   )->wait;
 }
 
+
 1;
 
 __END__
 
-Stolen from:
+
+=encoding utf8
+
+=head1 NAME
+
+Async::Crawler - An async web scraper/crawler
+
+=head1 SYNOPSIS
+
+  #!/usr/bin/env perl 
+  use Async::Crawler;
+
+  my $ac = Async::Crawler->new(
+      targets => [ 'https://example.com/' ],
+      elements => [
+          {
+              selector => 'p',
+              key => 'paragraphs[]',
+              attr => 'TEXT',
+          },
+          {
+              selector => 'a',
+              key => 'links[]',
+              attr => '@href',
+              filter => sub { s/www/w3/ },
+          },
+      ]
+  );
+
+  $ac->run;
+
+=head1 DESCRIPTION
+
+This crawl the target and by default print what it takes.
+
+=head1 ATTRIBUTES
+
+=head2 elements [ {} ]
+
+HTML Elements you want to select. Accepts a list of hashrefs. 
+
+the selector, the key where this data will be saved, any attribute to be extracted
+(text, href, src, etc..) and optionally the filter used to process the data
+
+
+=head2 targets
+
+The sites to run against.
+
+=head1 METHODS
+
+=head2 data_handler
+
+Overwrite this to save the data found. The data will be passed as an argument.
+
+=head2 run
+
+fires the process.
+
+=head1 AUTHOR
+
+Marco Arthur
+
+=head1 COPYRIGHT AND LICENSE
+
+Same as perl itself.
+
+=head1 SEE ALSO
+
+This was mostly stolen from:
 http://blogs.perl.org/users/stas/2013/02/web-scraping-with-modern-perl-part-2---speed-edition.html
+
+=cut
