@@ -7,9 +7,11 @@ use EV;
 use Web::Scraper::LibXML;
 use YADA;
 use DDP;
+
 use constant {
   MAX_LEVELS => 3,
-  DEBUG      => $ENV{ASYNC_CRAWLER_DEBUG},
+  MAX_WORKERS => 5,
+  DEBUG => $ENV{ASYNC_CRAWLER_DEBUG},
 };
 
 our $VERSION = '0.01';
@@ -19,19 +21,11 @@ has targets => sub { [] };
 
 # html elements to be searched
 # links are mandatory
-has elements =>
-  sub { 
-    [
-      {
-        selector => 'a',
-        key => 'links[]',
-        attr => '@href',
-      }
-    ]
-};
+has elements => sub { [{selector => 'a', key => 'links[]', attr => '@href',}] };
 
 # handler to data collected
 sub data_handler ($self, $doc) {
+
   # TODO: save it
   p $doc;
 }
@@ -43,7 +37,7 @@ sub run($self) {
   my $downloader = YADA->new(
     common_opts   => {encoding => '', followlocation => 1, maxredirs => 5,},
     http_response => 1,
-    max           => 4,
+    max           => MAX_WORKERS,
   );
 
   $downloader->append(
@@ -59,15 +53,18 @@ sub run($self) {
       # Declare the scraper once and then reuse it
       state $scraper = scraper {
         for my $el (@{$self->elements}) {
-          $el->{filter} ? 
-          process $el->{selector}, $el->{key} => [$el->{attr} , $el->{filter}]:
-          process $el->{selector}, $el->{key} => $el->{attr};
+          process $el->{selector},
+            $el->{key} => $el->{filter}
+            ? [$el->{attr}, $el->{filter}]
+            : $el->{attr};
         }
       };
 
       # parse response data
       my $doc
         = $scraper->scrape($yada->response->decoded_content, $yada->final_url);
+
+      $doc->{page} = $yada->final_url->as_string;
 
       # TODO: handle the data
       $self->data_handler($doc);
@@ -85,7 +82,6 @@ sub run($self) {
     }
   )->wait;
 }
-
 
 1;
 
